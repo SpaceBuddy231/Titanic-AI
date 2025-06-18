@@ -3,6 +3,9 @@
 
 import pandas as pd
 import os
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report
 
 # Program Path
 cwd = os.getcwd()
@@ -67,3 +70,21 @@ print("'Embarked' converted to One-Hot Encoding.")
 # Last dataset check (hopefully no missing values left)
 print("\nSo sehen die finalen Daten für das Modell aus:")
 print(df.head())
+
+# Building the AI model
+
+# Starting with isolating the (i call it) ingredients and the result or solution
+# 'X' will hold the ingredients (all the information about the passengers) and 'Y' will hold the result (whether the passenger survived or not)
+X = df.drop('Survived', axis=1)  # All information about the passengers except the 'Survived' column
+y = df['Survived']  # If the passenger survived or not
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)  # Splitting the data into training and testing sets (80% training, 20% testing)
+
+# Setting up the model that the AI will use to learn with the training data
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Evaluation of the model
+print("\n<--- Model evaluation --->")
+predictions = model.predict(X_test)
+print(f"\n\n\n\n=> Accuracy: -> {accuracy_score(y_test, predictions):.2f} <-")
